@@ -1,0 +1,86 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  background-color: black;
+  color: white;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+:root {
+  --neon-border-color: #03a9f4;
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.main {
+  display: flex;
+  justify-content: center;
+}
+
+.score-display > p {
+  text-align: center;
+}
+
+.score-wrapper {
+  width: 500px;
+  text-align: center;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.board {
+  width: 500px;
+  height: 500px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(auto, 1fr));
+  align-items: stretch;
+  box-shadow: 
+    0 0 3px #fff, 
+    0 0 5px #fff, 
+    inset 0 0 7px var(--neon-border-color), 
+    inset 0 0 9px var(--neon-border-color), 
+    inset 0 0 11px var(--neon-border-color), 
+    inset 0 0 13px var(--neon-border-color), 
+    inset 0 0 15px var(--neon-border-color);
+}
+
+.space {
+  box-shadow: 
+    0 0 3px #fff, 
+    0 0 5px #fff, 
+    0 0 7px var(--neon-border-color), 
+    0 0 9px var(--neon-border-color), 
+    0 0 11px var(--neon-border-color), 
+    0 0 13px var(--neon-border-color), 
+    0 0 15px var(--neon-border-color);
+}
