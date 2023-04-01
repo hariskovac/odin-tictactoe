@@ -26,3 +26,11 @@ const displayController = (() => {
 
   return { updateBoardDisplay };
 })();
+
+const Player = (name) => {
+  let score = 0;
+
+  const getScore = () => score;
+
+  return { getScore };
+}
