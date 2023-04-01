@@ -33,6 +33,15 @@ p, h1, h2, h3, h4, h5, h6 {
 
 :root {
   --neon-border-color: #03a9f4;
+  --neon-shadow: 
+      0 0 3px #fff, 
+      0 0 5px #fff, 
+      0 0 7px var(--neon-border-color), 
+      0 0 9px var(--neon-border-color), 
+      0 0 11px var(--neon-border-color), 
+      0 0 13px var(--neon-border-color), 
+      0 0 15px var(--neon-border-color);
+  --color1: rgb(255, 20, 147);
 }
 
 .layout {
@@ -64,6 +73,7 @@ p, h1, h2, h3, h4, h5, h6 {
   margin-bottom: 50px;
   display: grid;
   grid-template-columns: repeat(3, minmax(auto, 1fr));
+  grid-template-rows: repeat(3, minmax(auto, 1fr));
   align-items: stretch;
   box-shadow: 
     0 0 3px #fff, 
@@ -76,12 +86,27 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 
 .space {
-  box-shadow: 
-    0 0 3px #fff, 
-    0 0 5px #fff, 
-    0 0 7px var(--neon-border-color), 
-    0 0 9px var(--neon-border-color), 
-    0 0 11px var(--neon-border-color), 
-    0 0 13px var(--neon-border-color), 
-    0 0 15px var(--neon-border-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 5rem;
+  box-shadow: var(--neon-shadow);
+  text-shadow: var(--neon-shadow);
+}
+
+.btn {
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  margin: 2rem;
+  border-radius: 0.25rem;
+  background-color: black;
+  color: var(--color1);
+  border: var(--color1) 0.125em solid;
+  text-shadow: 0 0 0.125rem hsl(0 0% 100% / 0.3), 0 0 0.45rem var(--color1);
+  box-shadow: inset 0 0 0.5rem 0 var(--color1), 0 0 0.5rem 0 var(--color1);
+}
+
+.btn:hover {
+  background-color: var(--color1);
+  color: white;
 }
