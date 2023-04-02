@@ -22,6 +22,7 @@ const displayController = (() => {
   const oMarker = 'media/icon-circle.svg';
   const squares = document.querySelectorAll('.board-square');
   const spaces = document.querySelectorAll('.space');
+  const restartButton = document.querySelector('.restart-btn');
   let ties = 0;
   let currentMarker = xMarker;
 
@@ -81,7 +82,19 @@ const displayController = (() => {
     }
   };
 
-  return { updateBoardDisplay, changeTurn, checkWinner };
+  const resetBoard = () => {
+    spaces.forEach(space => {
+      space.src = '';
+    })
+    squares.forEach(square => {
+      square.classList.remove('full');
+    })
+    gameBoard.clearArray();
+  }
+
+  restartButton.addEventListener('click', resetBoard);
+
+  return { updateBoardDisplay, changeTurn, checkWinner, resetBoard };
 })();
 
 const Player = (name) => {
