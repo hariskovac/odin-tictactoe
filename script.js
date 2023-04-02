@@ -12,18 +12,19 @@ const gameBoard = (() => {
 })();
 
 const displayController = (() => {
-  let ties = 0;
-  let currentMarker;
   const xMarker = 'media/icon-cross.svg';
   const oMarker = 'media/icon-circle.svg';
   const square = document.querySelectorAll('.board-square');
   const spaces = document.querySelectorAll('.space');
+  let ties = 0;
+  let currentMarker = xMarker;
 
-  // Updates boardArray and the board display when a square is clicked
+  // Updates boardArray and the board display and swaps turns when a square is clicked
   square.forEach(function(square) {
     square.addEventListener('click', function() {
       gameBoard.updateBoardArray(square.dataset.index, currentMarker);
       updateBoardDisplay();
+      changeTurn();
     });
   });
 
@@ -37,7 +38,11 @@ const displayController = (() => {
     });
   };
 
-  return { updateBoardDisplay };
+  const changeTurn = () => {
+    currentMarker = currentMarker === xMarker ? oMarker : xMarker;
+  }
+
+  return { updateBoardDisplay, changeTurn };
 })();
 
 const Player = (name) => {
