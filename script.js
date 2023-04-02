@@ -8,19 +8,25 @@ const gameBoard = (() => {
     }
   };
 
-  return { getBoardArray, updateBoardArray };
+  const clearArray = () => {
+    for (let i = 0; i < boardArray.length; i++) {
+      boardArray[i] = '';
+    }
+  }
+
+  return { getBoardArray, updateBoardArray, clearArray };
 })();
 
 const displayController = (() => {
   const xMarker = 'media/icon-cross.svg';
   const oMarker = 'media/icon-circle.svg';
-  const square = document.querySelectorAll('.board-square');
+  const squares = document.querySelectorAll('.board-square');
   const spaces = document.querySelectorAll('.space');
   let ties = 0;
   let currentMarker = xMarker;
 
   // Updates boardArray and the board display and swaps turns when a square is clicked
-  square.forEach(function(square) {
+  squares.forEach(function(square) {
     square.addEventListener('click', function() {
       if (!square.classList.contains('full')) {
         gameBoard.updateBoardArray(square.dataset.index, currentMarker);
