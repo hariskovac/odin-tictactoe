@@ -1,4 +1,5 @@
-const Player = (name) => {
+// Player factory function
+const Player = () => {
   let score = 0;
 
   const getScore = () => score;
@@ -10,8 +11,9 @@ const Player = (name) => {
   return { getScore, addPoint };
 }
 
+// Gameboard module
 const gameBoard = (() => {
-  const boardArray = ['', '', '', '', '', '', '', '', ''];
+  const boardArray = ['x', 'x', 'x', 'o', 'o', 'o', 'x', 'x', 'x'];
   
   const getBoardArray = () => boardArray;
   const updateBoardArray = (index, marker) => {
@@ -29,6 +31,7 @@ const gameBoard = (() => {
   return { getBoardArray, updateBoardArray, clearArray };
 })();
 
+// Display controller module
 const displayController = (() => {
   const playerx = Player('x');
   const playero = Player('o');
@@ -60,9 +63,9 @@ const displayController = (() => {
   // Updates the board display based on the values in the boardArray
   const updateBoardDisplay = () => {
     let index = 0;
-    const array = gameBoard.getBoardArray();
+    const arr = gameBoard.getBoardArray();
     spaces.forEach(space => {
-      space.src = array[index];
+      space.src = arr[index];
       index += 1;
     });
   };
@@ -72,7 +75,7 @@ const displayController = (() => {
   };
 
   const checkWinner = () => {
-    const array = gameBoard.getBoardArray();
+    const arr = gameBoard.getBoardArray();
     const winningMoves = [
       [0, 1, 2],
       [3, 4, 5],
@@ -87,16 +90,16 @@ const displayController = (() => {
     // Checks for a winning combination of plays
     for (let i = 0; i < winningMoves.length; i++) {
       if (
-        array[winningMoves[i][0]] !== ''
-        && array[winningMoves[i][0]] === array[winningMoves[i][1]] 
-        && array[winningMoves[i][1]] === array[winningMoves[i][2]]
+        arr[winningMoves[i][0]] !== ''
+        && arr[winningMoves[i][0]] === arr[winningMoves[i][1]] 
+        && arr[winningMoves[i][1]] === arr[winningMoves[i][2]]
       ) {
-        winner = array[winningMoves[i][0]] === xMarker ? 'X wins!' : 'O wins!';
+        winner = arr[winningMoves[i][0]] === xMarker ? 'X wins!' : 'O wins!';
         updateScore();
       }
     } 
 
-    if (!array.includes('')) {
+    if (!arr.includes('')) {
       ties += 1;
       updateScore();
     }
@@ -122,10 +125,26 @@ const displayController = (() => {
     squares.forEach(square => {
       square.classList.remove('full');
     })
+    currentMarker = xMarker;
     gameBoard.clearArray();
   }
 
   restartButton.addEventListener('click', resetBoard);
 
   return { updateBoardDisplay, changeTurn, checkWinner, resetBoard, updateScore };
+})();
+
+const aiLogic = (() => {
+  let currentBoardState = [];
+
+  const updateBoardState = () => {
+    let arr = gameBoard.getBoardArray();
+    currentBoardState = [];
+    for (let i = 0; i < 9; i = i + 3) {
+      currentBoardState.push(arr.slice(i, i + 3));
+    }
+    console.log(currentBoardState);
+  }
+
+  return { updateBoardState };
 })();
