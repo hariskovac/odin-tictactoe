@@ -1,3 +1,15 @@
+const Player = (name) => {
+  let score = 0;
+
+  const getScore = () => score;
+
+  const addPoint = () => {
+    score += 1;
+  }
+
+  return { getScore, addPoint };
+}
+
 const gameBoard = (() => {
   const boardArray = ['', '', '', '', '', '', '', '', ''];
   
@@ -18,12 +30,18 @@ const gameBoard = (() => {
 })();
 
 const displayController = (() => {
+  const playerx = Player('x');
+  const playero = Player('o');
   const xMarker = 'media/icon-cross.svg';
   const oMarker = 'media/icon-circle.svg';
+  const xScore = document.querySelector('.x-score');
+  const oScore = document.querySelector('.o-score');
+  const tieScore = document.querySelector('.tie-score');
   const squares = document.querySelectorAll('.board-square');
   const spaces = document.querySelectorAll('.space');
   const restartButton = document.querySelector('.restart-btn');
   let ties = 0;
+  let winner;
   let currentMarker = xMarker;
 
   // Updates boardArray and the board display and swaps turns when a square is clicked
@@ -73,14 +91,29 @@ const displayController = (() => {
         && array[winningMoves[i][0]] === array[winningMoves[i][1]] 
         && array[winningMoves[i][1]] === array[winningMoves[i][2]]
       ) {
-        console.log('Winner!');
+        winner = array[winningMoves[i][0]] === xMarker ? 'X wins!' : 'O wins!';
+        updateScore();
       }
     } 
 
     if (!array.includes('')) {
-      console.log('Tie Game');
+      ties += 1;
+      updateScore();
     }
   };
+
+  const updateScore = () => {
+    if (winner === 'X wins!') {
+      playerx.addPoint();
+    } 
+    if (winner === 'O wins!') {
+      playero.addPoint();
+    }
+    xScore.textContent = playerx.getScore();
+    oScore.textContent = playero.getScore();
+    tieScore.textContent = ties;
+    winner = '';
+  }
 
   const resetBoard = () => {
     spaces.forEach(space => {
@@ -94,13 +127,5 @@ const displayController = (() => {
 
   restartButton.addEventListener('click', resetBoard);
 
-  return { updateBoardDisplay, changeTurn, checkWinner, resetBoard };
+  return { updateBoardDisplay, changeTurn, checkWinner, resetBoard, updateScore };
 })();
-
-const Player = (name) => {
-  let score = 0;
-
-  const getScore = () => score;
-
-  return { getScore };
-}
