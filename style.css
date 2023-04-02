@@ -70,9 +70,11 @@ p, h1, h2, h3, h4, h5, h6 {
 
 .title {
   width: 100%;
-  font-size: 2.5rem;
+  font-size: 3rem;
   background-color: var(--color1);
-  text-shadow: 0 0 0.125rem hsl(0 0% 100% / 0.3), 0 0 0.45rem var(--color1);
+  text-shadow: 
+    0 0 10px #fff, 
+    0 0 20px var(--neon-border-color);
   box-shadow: 0 0 2rem 0.5rem var(--color1);
   text-align: center;
 }
