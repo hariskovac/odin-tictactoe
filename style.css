@@ -33,14 +33,32 @@ p, h1, h2, h3, h4, h5, h6 {
 
 :root {
   --neon-border-color: #03a9f4;
+  --neon-text-color1: #3eff15;
+  --neon-text-color2: #df00fe;
   --neon-shadow: 
-      0 0 3px #fff, 
-      0 0 5px #fff, 
-      0 0 7px var(--neon-border-color), 
-      0 0 9px var(--neon-border-color), 
-      0 0 11px var(--neon-border-color), 
-      0 0 13px var(--neon-border-color), 
-      0 0 15px var(--neon-border-color);
+    0 0 3px #fff, 
+    0 0 5px #fff, 
+    0 0 7px var(--neon-border-color), 
+    0 0 9px var(--neon-border-color), 
+    0 0 11px var(--neon-border-color), 
+    0 0 13px var(--neon-border-color), 
+    0 0 15px var(--neon-border-color);
+  --neon-text-shadow1: 
+    0 0 3px #fff, 
+    0 0 5px #fff, 
+    0 0 7px var(--neon-text-color1), 
+    0 0 9px var(--neon-text-color1), 
+    0 0 11px var(--neon-text-color1), 
+    0 0 13px var(--neon-text-color1), 
+    0 0 15px var(--neon-text-color1);
+  --neon-text-shadow2: 
+    0 0 3px #fff, 
+    0 0 5px #fff, 
+    0 0 7px var(--neon-text-color2), 
+    0 0 9px var(--neon-text-color2), 
+    0 0 11px var(--neon-text-color2), 
+    0 0 13px var(--neon-text-color2), 
+    0 0 15px var(--neon-text-color2);
   --color1: rgb(255, 20, 147);
 }
 
@@ -55,8 +73,15 @@ p, h1, h2, h3, h4, h5, h6 {
   justify-content: center;
 }
 
+.score-display {
+  margin-top: 20px;
+  font-size: 1.5rem;
+}
+
 .score-display > p {
   text-align: center;
+  font-size: 2rem;
+  text-shadow: var(--neon-shadow);
 }
 
 .score-wrapper {
@@ -64,6 +89,18 @@ p, h1, h2, h3, h4, h5, h6 {
   text-align: center;
   display: flex;
   justify-content: space-evenly;
+}
+
+.green {
+  text-shadow: var(--neon-text-shadow1);
+}
+
+.white {
+  text-shadow: var(--neon-shadow);
+}
+
+.purple {
+  text-shadow: var(--neon-text-shadow2);
 }
 
 .board {
@@ -85,13 +122,18 @@ p, h1, h2, h3, h4, h5, h6 {
     inset 0 0 15px var(--neon-border-color);
 }
 
-.space {
+.board-square {
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 5rem;
   box-shadow: var(--neon-shadow);
   text-shadow: var(--neon-shadow);
+}
+
+img {
+  height: 100px;
+  filter: drop-shadow(0px 0px 10px white);
 }
 
 .btn {
