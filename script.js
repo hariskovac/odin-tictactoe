@@ -13,7 +13,7 @@ const Player = () => {
 
 // Gameboard module
 const gameBoard = (() => {
-  const boardArray = ['x', 'x', 'x', 'o', 'o', 'o', 'x', 'x', 'x'];
+  const boardArray = ['', '', '', '', '', '', '', '', ''];
   
   const getBoardArray = () => boardArray;
   const updateBoardArray = (index, marker) => {
@@ -135,16 +135,27 @@ const displayController = (() => {
 })();
 
 const aiLogic = (() => {
-  let currentBoardState = [];
+  let boardState = [];
 
   const updateBoardState = () => {
     let arr = gameBoard.getBoardArray();
-    currentBoardState = [];
+    boardState = [];
     for (let i = 0; i < 9; i = i + 3) {
-      currentBoardState.push(arr.slice(i, i + 3));
+      boardState.push(arr.slice(i, i + 3));
     }
-    console.log(currentBoardState);
   }
 
-  return { updateBoardState };
+  const areMovesLeft = () => {
+    for (let row = 0; row < 3; row++) {
+      for (let col = 0; col < 3; col++) {
+        if (boardState[row][col] === '') { 
+          return true 
+        }
+      }
+    }
+    return false;
+  }
+
+  updateBoardState();
+  return { updateBoardState, areMovesLeft };
 })();
