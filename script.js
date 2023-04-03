@@ -146,9 +146,9 @@ const aiLogic = (() => {
   }
 
   const areMovesLeft = () => {
-    for (let row = 0; row < 3; row++) {
-      for (let col = 0; col < 3; col++) {
-        if (boardState[row][col] === '') { 
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        if (boardState[r][c] === '') { 
           return true 
         }
       }
@@ -158,27 +158,27 @@ const aiLogic = (() => {
 
   const evaluateBoard = () => {
     updateBoardState();
-    for (let row = 0; row < 3; row++) {
+    for (let r = 0; r < 3; r++) {
       if (
-        boardState[row][0] === boardState[row][1]
-        && boardState[row][1] === boardState[row][2]
+        boardState[r][0] === boardState[r][1]
+        && boardState[r][1] === boardState[r][2]
       ) {
-        if (boardState[row][0] === 'media/icon-cross.svg') {
+        if (boardState[r][0] === 'media/icon-cross.svg') {
           return 10;
-        } else if (boardState[row][0] === 'media/icon-circle.svg') {
+        } else if (boardState[r][0] === 'media/icon-circle.svg') {
           return -10;
         }
       }
     }
 
-    for (let col = 0; col < 3; col++) {
+    for (let c = 0; c < 3; c++) {
       if (
-        boardState[0][col] === boardState[1][col]
-        && boardState[1][col] === boardState[2][col]
+        boardState[0][c] === boardState[1][c]
+        && boardState[1][c] === boardState[2][c]
       ) {
-        if (boardState[0][col] === 'media/icon-cross.svg') {
+        if (boardState[0][c] === 'media/icon-cross.svg') {
           return 10;
-        } else if (boardState[0][col] === 'media/icon-circle.svg') {
+        } else if (boardState[0][c] === 'media/icon-circle.svg') {
           return -10;
         }
       }
@@ -201,7 +201,47 @@ const aiLogic = (() => {
     }
   }
 
+  const minimax = (board, depth, isMax) => {
+    let score = evaluateBoard();
+
+    if (score === 10) return score;
+    if (score === -10) return score;
+    if (areMovesLeft() === false) return 0;
+    if (isMax) {
+      let best = -1000;
+
+      for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 3; c++) {
+          if (board[r][c] === '') {
+            // Make move here
+
+            best = Math.max(best, minimax(board, depth + 1, !isMax));
+
+            // Undo move
+          }
+        }
+      }
+      return best;
+    } else {
+      let best = -1000;
+
+      for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 3; c++) {
+          if (board[r][c] === '') {
+            // Make move here
+
+            best = Math.min(best, minimax(board, depth + 1, !isMax));
+
+            // Undo move
+          }
+        }
+      }
+      return best;
+    }
+  }
+
   updateBoardState();
   evaluateBoard();
-  return { updateBoardState, areMovesLeft, evaluateBoard };
+  minimax(boardState, 0, true);
+  return { updateBoardState, areMovesLeft, evaluateBoard, minimax };
 })();
