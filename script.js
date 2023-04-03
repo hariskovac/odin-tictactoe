@@ -156,6 +156,52 @@ const aiLogic = (() => {
     return false;
   }
 
+  const evaluateBoard = () => {
+    updateBoardState();
+    for (let row = 0; row < 3; row++) {
+      if (
+        boardState[row][0] === boardState[row][1]
+        && boardState[row][1] === boardState[row][2]
+      ) {
+        if (boardState[row][0] === 'media/icon-cross.svg') {
+          return 10;
+        } else if (boardState[row][0] === 'media/icon-circle.svg') {
+          return -10;
+        }
+      }
+    }
+
+    for (let col = 0; col < 3; col++) {
+      if (
+        boardState[0][col] === boardState[1][col]
+        && boardState[1][col] === boardState[2][col]
+      ) {
+        if (boardState[0][col] === 'media/icon-cross.svg') {
+          return 10;
+        } else if (boardState[0][col] === 'media/icon-circle.svg') {
+          return -10;
+        }
+      }
+    }
+
+    if (boardState[0][0] === boardState[1][1] && boardState[1][1] === boardState[2][2]) {
+      if (boardState[0][0] === 'media/icon-cross.svg') {
+        return 10;
+      } else if (boardState[0][0] === 'media/icon-circle.svg') {
+        return -10;
+      }
+    }
+
+    if (boardState[0][2] === boardState[1][1] && boardState[1][1] === boardState[2][0]) {
+      if (boardState[0][2] === 'media/icon-cross.svg') {
+        return 10;
+      } else if (boardState[0][2] === 'media/icon-circle.svg') {
+        return -10;
+      }
+    }
+  }
+
   updateBoardState();
-  return { updateBoardState, areMovesLeft };
+  evaluateBoard();
+  return { updateBoardState, areMovesLeft, evaluateBoard };
 })();
