@@ -240,8 +240,37 @@ const aiLogic = (() => {
     }
   }
 
+  const bestMove = (board) => {
+    let bestVal = -1000;
+    let bestMove = {
+      row: -1,
+      col: -1
+    }
+
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        if (board[r][c] === '') {
+          // Make move here
+
+          let moveVal = minimax(board, 0, false);
+
+          // Undo move
+
+          if (moveVal > bestVal) {
+            bestMove.row = r;
+            bestMove.col = c;
+            bestVal = moveVal;
+          }
+        }       
+      }
+    }
+
+    console.log(`The optimal move is [${bestMove.row}][${bestMove.col}]`);
+    return bestMove;
+  }
+
   updateBoardState();
   evaluateBoard();
   minimax(boardState, 0, true);
-  return { updateBoardState, areMovesLeft, evaluateBoard, minimax };
+  return { updateBoardState, areMovesLeft, evaluateBoard, minimax, bestMove };
 })();
