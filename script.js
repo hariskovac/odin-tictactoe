@@ -1,5 +1,5 @@
 // Player factory function
-const Player = () => {
+const Player = (marker) => {
   let score = 0;
 
   const getScore = () => score;
@@ -8,23 +8,29 @@ const Player = () => {
     score += 1;
   }
 
-  return { getScore, addPoint };
+  return { marker,getScore, addPoint };
 }
 
 // Gameboard module
 const gameBoard = (() => {
-  const boardArray = ['', '', '', '', '', '', '', '', ''];
+  const boardArray = [
+    ['', '', ''], 
+    ['', '', ''], 
+    ['', '', '']
+  ];
   
   const getBoardArray = () => boardArray;
-  const updateBoardArray = (index, marker) => {
-    if (boardArray[index] === '') {
-      boardArray[index] = marker;
+  const updateBoardArray = (row, col, marker) => {
+    if (boardArray[row][col] === '') {
+      boardArray[row][col] = marker;
     }
   };
 
   const clearArray = () => {
-    for (let i = 0; i < boardArray.length; i++) {
-      boardArray[i] = '';
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        boardArray[r][c] = '';
+      }
     }
   }
 
@@ -32,11 +38,9 @@ const gameBoard = (() => {
 })();
 
 // Display controller module
-const displayController = (() => {
-  const playerx = Player('x');
-  const playero = Player('o');
-  const xMarker = 'media/icon-cross.svg';
-  const oMarker = 'media/icon-circle.svg';
+const gameController = (() => {
+  const playerx = Player('media/icon-cross.svg');
+  const playero = Player('media/icon-circle.svg');
   const xScore = document.querySelector('.x-score');
   const oScore = document.querySelector('.o-score');
   const tieScore = document.querySelector('.tie-score');
@@ -45,16 +49,17 @@ const displayController = (() => {
   const restartButton = document.querySelector('.restart-btn');
   let ties = 0;
   let winner;
-  let currentMarker = xMarker;
+  let currentPlayer = playerx.marker;
 
   // Updates boardArray and the board display and swaps turns when a square is clicked
   squares.forEach(function(square) {
     square.addEventListener('click', function() {
       if (!square.classList.contains('full')) {
-        gameBoard.updateBoardArray(square.dataset.index, currentMarker);
+        gameBoard.updateBoardArray(square.dataset.row, square.dataset.col, currentPlayer);
         updateBoardDisplay();
         changeTurn();
-        checkWinner();
+        checkWinner(gameBoard.getBoardArray());
+        updateScore();
         square.classList.toggle('full');
       }
     });
@@ -62,55 +67,69 @@ const displayController = (() => {
 
   // Updates the board display based on the values in the boardArray
   const updateBoardDisplay = () => {
-    let index = 0;
     const arr = gameBoard.getBoardArray();
     spaces.forEach(space => {
-      space.src = arr[index];
-      index += 1;
+      space.src = arr[space.dataset.row][space.dataset.col];
     });
   };
 
   const changeTurn = () => {
-    currentMarker = currentMarker === xMarker ? oMarker : xMarker;
+    currentPlayer = currentPlayer === playerx.marker ? playero.marker : playerx.marker;
   };
 
-  const checkWinner = () => {
-    const arr = gameBoard.getBoardArray();
-    const winningMoves = [
-      [0, 1, 2],
-      [3, 4, 5],
-      [6, 7, 8],
-      [0, 3, 6],
-      [1, 4, 7],
-      [2, 5, 8],
-      [0, 4, 8],
-      [2, 4, 6]
-    ];
+  const areEqual = (a, b, c) => {
+    return a === b && b === c && a !== '';
+  }
 
-    // Checks for a winning combination of plays
-    for (let i = 0; i < winningMoves.length; i++) {
-      if (
-        arr[winningMoves[i][0]] !== ''
-        && arr[winningMoves[i][0]] === arr[winningMoves[i][1]] 
-        && arr[winningMoves[i][1]] === arr[winningMoves[i][2]]
-      ) {
-        winner = arr[winningMoves[i][0]] === xMarker ? 'X wins!' : 'O wins!';
-        updateScore();
+  const checkWinner = (board) => {
+    winner = null;
+    for (let r = 0; r < 3; r++) {
+      if (areEqual(board[r][0], board[r][1], board[r][2])) {
+        winner = board[r][0] === playerx.marker ? 'X' : 'O';
       }
     } 
 
-    if (!arr.includes('')) {
-      ties += 1;
-      updateScore();
+    for (let c = 0; c < 3; c++) {
+      if (areEqual(board[0][c], board[1][c], board[2][c])) {
+        winner = board[0][c] === playerx.marker ? 'X' : 'O';
+      }
+    } 
+
+    if (areEqual(board[0][0], board[1][1], board[2][2])) {
+      winner = board[1][1] === playerx.marker ? 'X' : 'O';
     }
+
+    if (areEqual(board[2][0], board[1][1], board[0][2])) {
+      winner = board[1][1] === playerx.marker ? 'X' : 'O';
+    }
+
+    let openSpaces = 0;
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        if (board[r][c] == '') {
+          openSpaces++;
+        }
+      }
+    }
+    console.log(openSpaces);
+    console.log(winner);
+
+    if (winner === null && openSpaces === 0) {
+      winner = 'tie';
+      return winner;
+    } 
+    return winner;
   };
 
   const updateScore = () => {
-    if (winner === 'X wins!') {
+    if (winner === 'X') {
       playerx.addPoint();
     } 
-    if (winner === 'O wins!') {
+    if (winner === 'O') {
       playero.addPoint();
+    }
+    if (winner === 'tie') {
+      ties += 1;
     }
     xScore.textContent = playerx.getScore();
     oScore.textContent = playero.getScore();
@@ -125,7 +144,7 @@ const displayController = (() => {
     squares.forEach(square => {
       square.classList.remove('full');
     })
-    currentMarker = xMarker;
+    currentPlayer = playerx.marker;
     gameBoard.clearArray();
   }
 
