@@ -1,9 +1,3 @@
-let boardArray = [
-  ['', '', ''], 
-  ['', '', ''], 
-  ['', '', '']
-];
-
 // Player factory function
 const Player = (marker) => {
   let score = 0;
@@ -19,7 +13,11 @@ const Player = (marker) => {
 
 // Gameboard module
 const gameBoard = (() => {
-
+  let boardArray = [
+    ['', '', ''], 
+    ['', '', ''], 
+    ['', '', '']
+  ];
   
   const getBoardArray = () => boardArray;
   const updateBoardArray = (row, col, marker) => {
@@ -51,7 +49,6 @@ const gameController = (() => {
   const restartButton = document.querySelector('.restart-btn');
   let ties = 0;
   let winner;
-  let currentPlayer = playerx.marker;
 
   // Updates boardArray and the board display and swaps turns when a square is clicked
   squares.forEach(function(square) {
@@ -62,7 +59,7 @@ const gameController = (() => {
         checkWinner(gameBoard.getBoardArray());
         
         square.classList.toggle('full');
-        aiLogic.findBestMove(boardArray);
+        aiLogic.findBestMove(gameBoard.getBoardArray());
         updateScore();
       }
     });
@@ -76,58 +73,14 @@ const gameController = (() => {
     });
   };
 
-  const changeTurn = () => {
-    currentPlayer = currentPlayer === playerx.marker ? playero.marker : playerx.marker;
-  };
-
-  // const areEqual = (a, b, c) => {
-  //   return a === b && b === c && a !== '';
-  // }
-
-  // const checkWinner = (board) => {
-  //   winner = null;
-  //   for (let r = 0; r < 3; r++) {
-  //     if (areEqual(board[r][0], board[r][1], board[r][2])) {
-  //       winner = board[r][0] === playerx.marker ? 10 : -10;
-  //     }
-  //   } 
-
-  //   for (let c = 0; c < 3; c++) {
-  //     if (areEqual(board[0][c], board[1][c], board[2][c])) {
-  //       winner = board[0][c] === playerx.marker ? 10 : -10;
-  //     }
-  //   } 
-
-  //   if (areEqual(board[0][0], board[1][1], board[2][2])) {
-  //     winner = board[1][1] === playerx.marker ? 10 : -10;
-  //   }
-
-  //   if (areEqual(board[2][0], board[1][1], board[0][2])) {
-  //     winner = board[1][1] === playerx.marker ? 10 : -10;
-  //   }
-
-  //   let openSpaces = 0;
-  //   for (let r = 0; r < 3; r++) {
-  //     for (let c = 0; c < 3; c++) {
-  //       if (board[r][c] == '') {
-  //         openSpaces++;
-  //       }
-  //     }
-  //   }
-
-  //   if (winner === null && openSpaces === 0) {
-  //     winner = 0;
-  //   } 
-  //   return winner;
-  // };
-
+  // Checks for a winner or tie game
   const checkWinner = (board) => {
     for (let r = 0; r < 3; r++) {
       if (board[r][0] === board[r][1] && board[r][1] === board[r][2]) {
           if (board[r][0] === playerx.marker) {
-            return 10;
-          } else if (board[r][0] === playero.marker) {
             return -10;
+          } else if (board[r][0] === playero.marker) {
+            return 10;
           }
         }
     }
@@ -135,30 +88,42 @@ const gameController = (() => {
     for (let c = 0; c < 3; c++) {
       if (board[0][c] === board[1][c] && board[1][c] === board[2][c]) {
           if (board[0][c] === playerx.marker) {
-            return 10;
-          } else if (board[0][c] === playero.marker) {
             return -10;
+          } else if (board[0][c] === playero.marker) {
+            return 10;
           }
         }
     }
 
     if (board[0][0] === board[1][1] && board[1][1] === board[2][2]) {
       if (board[1][1] === playerx.marker) {
-        return 10;
-      } else if (board[1][1] === playero.marker) {
         return -10;
+      } else if (board[1][1] === playero.marker) {
+        return 10;
       }
     }
 
     if (board[0][2] === board[1][1] && board[1][1] === board[2][0]) {
       if (board[1][1] === playerx.marker) {
-        return 10;
-      } else if (board[1][1] === playero.marker) {
         return -10;
+      } else if (board[1][1] === playero.marker) {
+        return 10;
       }
     }
 
-    return 0;
+    let openSpaces = 0;
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
+        if (board[r][c] == '') {
+          openSpaces++;
+        }
+      }
+    }
+
+    if (openSpaces === 0) {
+      return 0;
+    } 
+    
   }
 
   const updateScore = () => {
@@ -184,7 +149,6 @@ const gameController = (() => {
     squares.forEach(square => {
       square.classList.remove('full');
     })
-    currentPlayer = playerx.marker;
     gameBoard.clearArray();
   }
 
@@ -199,7 +163,7 @@ const aiLogic = (() => {
   const aiPlayer = 'media/icon-circle.svg';
 
   const minimax = (board, depth, isMax) => {
-    // Checks to see if anyone won the game and returns 10 for X, -10 for O, or 0 in case of a tie
+    // Checks to see if anyone won the game and returns -10 for X, 10 for O, or 0 in case of a tie
     let score = gameController.checkWinner(board);
 
     if (score === 10) {
@@ -217,7 +181,7 @@ const aiLogic = (() => {
       for (let r = 0; r < 3; r++) {
         for (let c = 0; c < 3; c++) {
           if (board[r][c] === '') {
-            board[r][c] = huPlayer;
+            board[r][c] = aiPlayer;
             best = Math.max(best, minimax(board, depth + 1, false));
             board[r][c] = '';
           }
@@ -229,7 +193,7 @@ const aiLogic = (() => {
       for (let r = 0; r < 3; r++) {
         for (let c = 0; c < 3; c++) {
           if (board[r][c] === '') {
-            board[r][c] = aiPlayer;
+            board[r][c] = huPlayer;
             best = Math.min(best, minimax(board, depth + 1, true));
             board[r][c] = '';
           }
@@ -246,14 +210,13 @@ const aiLogic = (() => {
     for (let r = 0; r < 3; r++) {
       for (let c = 0; c < 3; c++) {
         if (board[r][c] === '') {
-          // I suspect this may be one source of the bug
-          board[r][c] = huPlayer;
+          board[r][c] = aiPlayer;
           let moveVal = minimax(board, 0, false);
           board[r][c] = '';
 
           if (moveVal > bestVal) {
-            bestMove = { row: r, col: c };
             bestVal = moveVal;
+            bestMove = { row: r, col: c };
           }
         }
       }
