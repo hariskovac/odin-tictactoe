@@ -64,13 +64,22 @@ const gameController = (() => {
     });
   });
 
+  const fillSquare = (row, col) => {
+    squares.forEach(square => {
+      if (square.dataset.row == row && square.dataset.col == col) {
+        console.log('aye');
+        square.classList.toggle('full');
+      }
+    })
+  }
+
   // Updates the board display based on the values in the boardArray
   const updateBoardDisplay = () => {
     const arr = gameBoard.getBoardArray();
     spaces.forEach(space => {
       space.src = arr[space.dataset.row][space.dataset.col];
     });
-  };
+  }
 
   // Checks for a winner or tie game
   const checkWinner = (board) => {
@@ -164,7 +173,7 @@ const gameController = (() => {
 
   restartButton.addEventListener('click', resetBoard);
 
-  return { updateBoardDisplay, checkWinner, updateScore };
+  return { fillSquare, updateBoardDisplay, checkWinner, updateScore };
 })();
 
 const aiLogic = (() => {
@@ -233,6 +242,7 @@ const aiLogic = (() => {
     }
     // Plays the AI's move by updating the array and the display
     gameBoard.updateBoardArray(bestMove.row, bestMove.col, aiPlayer);
+    gameController.fillSquare(bestMove.row, bestMove.col);
     gameController.updateBoardDisplay();
     gameController.checkWinner(gameBoard.getBoardArray());
     gameController.updateScore();
