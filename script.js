@@ -8,7 +8,11 @@ const Player = (marker) => {
     score += 1;
   }
 
-  return { marker, getScore, addPoint };
+  const clearScore = () => {
+    score = 0;
+  }
+
+  return { marker, getScore, addPoint, clearScore };
 }
 
 // Gameboard module
