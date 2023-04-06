@@ -50,31 +50,106 @@ const gameController = (() => {
   const tieScoreDisplay = document.querySelector('.tie-score');
   const squares = document.querySelectorAll('.board-square');
   const spaces = document.querySelectorAll('.space');
-  const restartButton = document.querySelector('.restart-btn');
+  const chooseMode = document.querySelector('.choose-mode');
+  const modeText = document.querySelector('.mode-text');
+  const vsAiButton = document.querySelector('.vs-ai-btn');
+  const vsHuButton = document.querySelector('.vs-hu-btn');
+  let numPlayers = 0;
+  let didModeChange = false;
+  let gameOver = false;
   let ties = 0;
-  let winner;
-
+  let currentPlayer = playerx.marker;
+  let winner = '';
+  
   // Updates boardArray and the board display and swaps turns when a square is clicked
   squares.forEach(function(square) {
     square.addEventListener('click', function() {
-      if (!square.classList.contains('full')) {
-        gameBoard.updateBoardArray(square.dataset.row, square.dataset.col, playerx.marker);
-        updateBoardDisplay();
-        checkWinner(gameBoard.getBoardArray());
-        updateScore();
-        square.classList.toggle('full');
-        aiLogic.findBestMove(gameBoard.getBoardArray());
+      if (!square.classList.contains('full') && numPlayers === 1) {
+        playTurn(this, playerx.marker);
+        if (winner === '') {
+          aiLogic.findBestMove(gameBoard.getBoardArray());
+        }
+      } else if (!square.classList.contains('full') && numPlayers === 2) {
+        playTurn(this, currentPlayer);
+        if (currentPlayer === playerx.marker) {
+          currentPlayer = playero.marker;
+        } else {
+          currentPlayer = playerx.marker;
+        }
+      } else if (gameOver === true) {
+        resetBoard();
+        gameOver = false;
       }
     });
   });
 
+  vsAiButton.addEventListener('click', function() {
+    resetBoard();
+
+    if (numPlayers === 0) {
+      chooseMode.classList.toggle('choose-mode');
+      modeText.classList.toggle('disabled');
+    }
+
+    if (numPlayers !== 1) {
+      numPlayers = 1;
+      didModeChange = true;
+      ties = 0;
+      playerx.clearScore();
+      playero.clearScore();
+      updateScore();
+      gameSetup();
+    }
+  });
+
+  vsHuButton.addEventListener('click', function() {
+    resetBoard();
+
+    if (numPlayers === 0) {
+      chooseMode.classList.toggle('choose-mode');
+      modeText.classList.toggle('disabled');
+    }
+
+    if (numPlayers !== 2) {
+      numPlayers = 2;
+      didModeChange = true;
+      ties = 0;
+      playerx.clearScore();
+      playero.clearScore();
+      updateScore();
+      gameSetup();
+    }
+  });
+
+  const gameSetup = () => {
+    if (didModeChange) {
+      updateBoardDisplay();
+      didModeChange = false;
+    }
+
+    if (winner !== '') {
+      fillAllSquares();
+    }
+  }
+
+  const playTurn = (square, marker) => {
+    gameBoard.updateBoardArray(square.dataset.row, square.dataset.col, marker);
+    updateBoardDisplay();
+    checkWinner(gameBoard.getBoardArray());
+    updateScore();
+    square.classList.toggle('full');
+  }
+
   const fillSquare = (row, col) => {
     squares.forEach(square => {
       if (square.dataset.row == row && square.dataset.col == col) {
-        console.log('aye');
         square.classList.toggle('full');
       }
     })
+  }
+
+  const fillAllSquares = () => {
+    squares.forEach(square => square.classList.add('full'));
   }
 
   // Updates the board display based on the values in the boardArray
@@ -145,22 +220,27 @@ const gameController = (() => {
       winner = 'tie';
       return 0;
     } 
+    winner = '';
   }
 
   // Updates the score display
   const updateScore = () => {
     if (winner === 'X') {
+      gameOver = true;
       playerx.addPoint();
     } 
     if (winner === 'O') {
+      gameOver = true;
       playero.addPoint();
     }
     if (winner === 'tie') {
+      gameOver = true;
       ties += 1;
     }
     xScoreDisplay.textContent = playerx.getScore();
     oScoreDisplay.textContent = playero.getScore();
     tieScoreDisplay.textContent = ties;
+    gameSetup();
     winner = '';
   }
 
@@ -173,9 +253,8 @@ const gameController = (() => {
       square.classList.remove('full');
     })
     gameBoard.clearArray();
+    currentPlayer = playerx.marker;
   }
-
-  restartButton.addEventListener('click', resetBoard);
 
   return { fillSquare, updateBoardDisplay, checkWinner, updateScore };
 })();
